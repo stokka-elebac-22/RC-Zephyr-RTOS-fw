@@ -1,0 +1,9 @@
+# Copyright (c) 2019 Nordic Semiconductor
+# SPDX-License-Identifier: Apache-2.0
+
+config CAP_SENSOR
+	bool "Capasitive sensing driver Driver"
+	depends on PWM
+	depends on ADC
+	help
+	  Cap sensing Driver.

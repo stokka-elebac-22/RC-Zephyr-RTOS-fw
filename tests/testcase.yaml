@@ -1,0 +1,19 @@
+---
+tests:
+  # section.subsection
+  testing.ztest:
+    build_only: false
+    platform_allow: native_posix
+    tags: testing
+  build.particle:
+    build_only: true
+    platform_allow: particle_xenon
+    tags: build
+  build.soilsensor:
+    build_only: true
+    platform_allow: soilsensor
+    tags: build
+  build.plant_led:
+    build_only: true
+    platform_allow: plant_led
+    tags: build

@@ -1,0 +1,8 @@
+# Copyright (c) 2019 Nordic Semiconductor
+# SPDX-License-Identifier: Apache-2.0
+
+config PCA9632
+	bool "PCA9632 Led Driver"
+	depends on I2C
+	help
+	  PCA9632 Led Driver.

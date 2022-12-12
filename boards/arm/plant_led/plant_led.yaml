@@ -1,0 +1,17 @@
+identifier: plant_led
+name: Horti_Plant_LED
+type: mcu
+arch: arm
+ram: 256
+flash: 1024
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - ble
+  - ieee802154
+  - pwm
+  - spi
+  - watchdog
+  - counter

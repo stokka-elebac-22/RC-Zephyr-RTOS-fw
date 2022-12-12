@@ -1,0 +1,43 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/../../zephyr/../modules/lib/tinycbor/src",
+                "${workspaceFolder}/../../zephyr/arch/arm/include",
+                "${workspaceFolder}/../../modules/hal/cmsis/CMSIS/Core/Include",
+                "${workspaceFolder}/../../modules/hal/nordic/.",
+                "${workspaceFolder}/../../modules/hal/nordic/nrfx",
+                "${workspaceFolder}/../../modules/hal/nordic/nrfx/drivers/include",
+                "${workspaceFolder}/../../modules/hal/nordic/nrfx/hal",
+                "${workspaceFolder}/../../modules/hal/nordic/nrfx/mdk",
+                "${workspaceFolder}/../../modules/crypto/mbedtls/mbedtls/configs",
+                "${workspaceFolder}/../../modules/crypto/mbedtls/mbedtls/include",
+                "${workspaceFolder}/../../modules/crypto/tinycrypt/lib/include",
+                "${workspaceFolder}/../../zephyr/include",
+                "${workspaceFolder}/../../zephyr/include/drivers",
+                "${workspaceFolder}/../../zephyr/kernel/include",
+                "${workspaceFolder}/../../zephyr/lib/libc/minimal/include",
+                "${workspaceFolder}/../../zephyr/soc/arm/nordic_nrf/nrf52",
+                "${workspaceFolder}/../../zephyr/subsys/bluetooth",
+                "${workspaceFolder}/../../zephyr/subsys/bluetooth/controller/ll_sw/nordic",
+                "${workspaceFolder}/../../zephyr/subsys/net/lib/coap/.",
+                "${workspaceFolder}/../../zephyr/subsys/net/lib/dns/.",
+                "${workspaceFolder}/../../zephyr/subsys/net/lib/sockets/.",
+                "${workspaceFolder}/../../zephyr/subsys/net/lib/tls_credentials/.",
+                "${workspaceFolder}/build/zephyr/include/generated/",
+                "${workspaceFolder}/src/headers/"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}

@@ -1,0 +1,158 @@
+/*
+ * Copyright (c) 2019 PHYTEC Messtechnik GmbH
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+ /delete-node/ &boot_partition;
+ /delete-node/ &slot0_partition;
+ /delete-node/ &slot1_partition;
+ 
+ &flash0 {
+	 partitions {
+			 compatible = "fixed-partitions";
+			 #address-cells = <1>;
+			 #size-cells = <1>;
+ 
+			 boot_partition: partition@0 {
+				 label = "mcuboot";
+				 reg = <0x000000000 0x00010000>;
+			 };
+			 slot0_partition: partition@10000 {
+				 label = "image-0";
+				 reg = <0x000010000 0x000074000>;
+			 };
+			 slot1_partition: partition@75000 {
+				 label = "image-1";
+				 reg = <0x00084000 0x000074000>;
+			 };
+	 };
+ };
+
+   &pwm0 {
+	status = "okay";
+	ch0-pin = <44>;
+   };
+   &pwm1 {
+	status = "okay";
+	ch0-pin = <42>;
+	ch1-pin = <40>;
+	ch2-pin = <43>;
+   };
+   &pwm3 {
+	status = "okay";
+	ch0-pin = <34>;
+	ch1-pin = <33>;
+   };
+
+ &i2c0 {
+	status = "okay";
+	bme280: bme280@76 {
+		compatible = "bosch,bme280";
+		reg = <0x76>;
+		label = "ENVIRONMENTAL_SENSOR";
+	};
+	vl53l0x: vl53l0x@29 {
+		compatible = "st,vl53l0x";
+		reg = <0x29>;
+		// xshut-gpios = <&gpioc 6 GPIO_ACTIVE_HIGH>;
+		label = "LASER_DISTANCE_SENSOR";
+	};
+	// mpu9250@68 {
+	// 	compatible = "invensense,mpu6050";
+	// 	reg = <0x68>;
+	// 	status = "okay";
+	// 	label = "MPU9250";
+	// 	int-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
+	// };	
+};
+&spi1 {
+    status = "okay";
+	compatible = "nordic,nrf-spi";
+	sck-pin = <47>;   /* 32 + 15 */
+	mosi-pin = <45>;  /* 32 + 13 */
+ 	miso-pin = <46>;  /* 32 + 14 */	
+    cs-gpios = <&gpio0 4 GPIO_ACTIVE_LOW>;
+	can1: mcp2515@0 {               
+		compatible = "microchip,mcp2515";
+		spi-max-frequency = <1000000>;
+		int-gpios = <&gpio0 3 0>; /* D2 */
+		status = "okay";
+		label = "CAN_1";
+		reg = <0x0>;
+		osc-freq = <16000000>;
+		bus-speed = <125000>;
+		sjw = <1>;
+		prop-seg = <2>;
+		phase-seg1 = <7>;
+		phase-seg2 = <6>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		sample-point = < 875 >; // ?
+	};
+};
+/ {
+	gpio_keys {
+		echo0: button_2 {
+			gpios = <&gpio1 3 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+			label = "Distance sensor 0 echo pin";
+		};		
+		echo1: button_3 {
+			gpios = <&gpio0 31 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+			label = "Distance sensor 1 echo pin";
+		};		
+	};
+	leds {
+		trig0: led_0 {
+			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+			label = "Distance sensor 0 trig pin";
+		};
+		trig1: led_1 {
+			gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+			label = "Distance sensor 1 trig pin";
+		};
+	};
+	vbatt {
+		compatible = "voltage-divider";
+		io-channels = <&adc 2>;
+		output-ohms = <2100000>;
+		full-ohms = <(2100000 + 806000)>;
+	};
+
+	aliases {
+		i2c0 = &i2c0;
+		pwm0 = &pwm0;
+		pwm1 = &pwm1;
+		pwm3 = &pwm3;
+		can1 = &can1;
+		echo0 = &echo0;
+		trig0 = &trig0;
+
+		echo1 = &echo1;
+		trig1 = &trig1;
+	};
+};
+
+// &qdec {
+// 	compatible = "nordic,nrf-qdec";
+// 	status = "okay";
+// 	a-pin = <28>;
+// 	b-pin = <4>;
+// 	led-pre = <0>;
+// 	steps = <60>;
+// 	label = "QDEC_0";
+// };
+/ {
+	chosen {
+		zephyr,console = &cdc_acm_uart0;
+		zephyr,shell-uart = &cdc_acm_uart0;
+		zephyr,can-primary = &can1;
+	};
+};
+
+&zephyr_udc0 {
+	cdc_acm_uart0: cdc_acm_uart0 {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
+};
+

@@ -1,0 +1,1 @@
+"C:\Program Files\openocd\bin\openocd.exe"  -f interface/jlink.cfg -c "transport select swd" -f target/nrf52.cfg -c init -c "reset init" -c halt -c "nrf52_recover"  -c "program bootloader/mcuboot-e73.hex verify" -c "program build/zephyr/zephyr.signed.hex verify" -c reset -c exit

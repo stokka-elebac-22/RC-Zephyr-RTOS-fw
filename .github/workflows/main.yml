@@ -1,0 +1,91 @@
+---
+name: BuildFirmware
+# yamllint disable rule:line-length
+# Controls when the action will run. 
+on:
+  push:
+    branches:
+      - main
+      - test
+    tags:
+      - "v*"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  cancel-previous-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@master
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        if: "github.ref != 'refs/heads/main'"
+
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/zmkfirmware/zmk-build-arm:3.0
+    strategy:
+      matrix:
+        board: [particle_xenon]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get the version
+        id: get_version
+        run: |
+          version="${GITHUB_REF##*/}"
+          echo "::set-output name=VERSION::${version}"
+          echo "::set-output name=month::$(date +'%b')"
+      - name: Cache west modules
+        uses: actions/cache@v3.0.2
+        id: cache
+        env:
+          cache-name: cache-zephyr-modules
+        with:
+          path: |
+            modules/
+            tools/
+            zephyr/
+            .west/
+            bootloader/
+            ~/.cache/pip
+            ~/.local/bin
+          key: 1-${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.get_version.outputs.month }}
+        timeout-minutes: 2
+        continue-on-error: true
+      - name: Initialize workspace (west init)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          west init --mr v2.7.0
+          west update
+          west zephyr-export
+      - name: Initialize pip
+        run: |
+          apt update
+          apt -y install python3-pip
+          pip3 install --user -r zephyr/scripts/requirements.txt
+      - name: Build FW
+        run: |
+          git_hash=$(git rev-parse --short=8 "$GITHUB_SHA")
+          git_branch="${GITHUB_REF##*/}"
+          version="${GITHUB_REF##*/}"
+          mkdir -p "$GITHUB_WORKSPACE/${version}${{ matrix.board }}"
+          west build -b ${{ matrix.board }}
+          cp build/zephyr/zephyr.signed.hex /tmp/Horti-LED_${{ matrix.board }}.hex
+          cp build/zephyr/zephyr.signed.bin \
+            "$GITHUB_WORKSPACE/${version}${{ matrix.board }}/Horti-LED_${{ matrix.board }}-${git_branch}-${git_hash}.bin"
+      # Will need project number. Should be changed with API deployment
+      # - name: deploy file to server
+      #   uses: Horticulture-project/SFTP-Deploy-Action@v1.2.2
+      #   with:
+      #     username: 'rcproject'
+      #     server: '${{ secrets.DEPLOY_SERVER_IP }}'
+      #     ssh_private_key: '${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}'
+      #     local_path: './${{ steps.get_version.outputs.VERSION }}${{ matrix.board }}'
+      #     remote_path: 'rc-fw'
+      #     args: '-o ConnectTimeout=5'
+# yamllint enable

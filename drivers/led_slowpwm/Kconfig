@@ -1,0 +1,8 @@
+# Copyright (c) 2019 Nordic Semiconductor
+# SPDX-License-Identifier: Apache-2.0
+
+config LED_SLOWPWM
+	bool "Slow PWM Led Driver"
+	depends on PWM
+	help
+	  2kHz PWM Led Driver.

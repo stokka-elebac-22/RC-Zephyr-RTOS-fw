@@ -1,0 +1,166 @@
+/*
+ * Copyright (c) 2018 Nordic Semiconductor ASA
+ * Copyright (c) 2017 Linaro Limited
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+
+/ {
+	model = "Horit Plant Led";
+	compatible = "nordic,plant_led";
+
+	chosen {
+		zephyr,console = &uart0;
+		zephyr,shell-uart = &uart0;
+		zephyr,uart-mcumgr = &uart0;
+		zephyr,bt-mon-uart = &uart0;
+		zephyr,bt-c2h-uart = &uart0;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,code-partition = &slot0_partition;
+	};
+	gpio_keys {
+		compatible = "gpio-keys";
+		mode_button: button_0 {
+			gpios = <&gpio0 24 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Mode Button";
+		};
+
+		reset_button: button_1 {
+				gpios = <&gpio0 18 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+				label = "Reset Button";
+		};
+	 
+	};
+
+
+
+};
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x000000000 0x00010000>;
+		};
+		slot0_partition: partition@10000 {
+			label = "image-0";
+			reg = <0x000010000 0x000074000>;
+		};
+		slot1_partition: partition@75000 {
+			label = "image-1";
+			reg = <0x00084000 0x000074000>;
+		};
+
+		/*
+		 * The flash starting at 0x000f8000 and ending at
+		 * 0x000fffff is reserved for use by the application.
+		 */
+
+		/*
+		 * Storage partition will be used by FCB/LittleFS/NVS
+		 * if enabled.
+		 */
+		storage_partition: partition@f8000 {
+			label = "storage";
+			reg = <0x000f8000 0x00008000>;
+		};
+	};
+};
+
+zephyr_udc0: &usbd {
+	compatible = "nordic,nrf-usbd";
+	status = "okay";
+};
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&uart0 {
+	compatible = "nordic,nrf-uarte";
+	status = "okay";
+	current-speed = <115200>;
+	tx-pin = <43>;
+	rx-pin = <42>;
+};
+&pwm0 {
+	status = "okay";
+	ch0-pin = <30>;
+	ch1-pin = <31>;
+	ch2-pin = <29>;
+	ch3-pin = <02>;
+};
+&i2c0 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_STANDARD>;
+	sda-pin = <3>;
+	scl-pin = <28>;
+
+	pca96320: pca9632@60 {
+		compatible = "nxp,pca9632";
+		reg = <0x60>;
+		label = "pca9632-0";
+	};
+	pca96321: pca9632@61 {
+		compatible = "nxp,pca9632";
+		reg = <0x61>;
+		label = "pca9632-1";
+	};
+	pca96322: pca9632@62 {
+		compatible = "nxp,pca9632";
+		reg = <0x62>;
+		label = "pca9632-2";
+	};
+	pca96323: pca9632@63 {
+		compatible = "nxp,pca9632";
+		reg = <0x63>;
+		label = "pca9632-3";
+	};
+};
+/ {
+	pwmleds {
+		compatible = "pwm-leds";
+
+		purple0_pwm_led: led_pwm_0 {
+			pwms = <&pwm0 30>;
+			label = "PURPLE0";
+		};
+
+		royale_blue_pwm_led: led_pwm_1 {
+			pwms = <&pwm0 31>;
+			label = "RBLUE";
+		};
+
+		lime_pwm_led: led_pwm_2 {
+			pwms = <&pwm0 29>;
+			label = "LIME";
+		};
+
+		purple1_pwm_led: led_pwm_3 {
+			pwms = <&pwm0 2>;
+			label = "PURPLE1";
+		};
+	};
+
+	aliases {
+		purple0-pwm-led = &purple0_pwm_led;
+		lime-pwm-led = &lime_pwm_led;
+		royal-blue-pwm-led = &royale_blue_pwm_led;
+		purple1-pwm-led = &purple1_pwm_led;
+	};
+};

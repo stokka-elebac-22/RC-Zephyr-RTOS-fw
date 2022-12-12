@@ -1,0 +1,127 @@
+// {
+//     "version": "0.2.0",
+//     "configurations": [
+
+// 		{
+// 			"type": "gdb",
+// 			"request": "launch",
+// 			"name": "GDB",
+// 			"program": "${workspaceFolder}/${command:AskForProgramName}",
+// 			"stopOnEntry": true
+// 		},
+// 		{
+// 			"cwd": "${workspaceRoot}",
+// 			"executable": "${workspaceRoot}/build/zephyr/zephyr.elf",
+// 			"name": "Debug with OpenOCD",
+// 			"request": "launch",
+// 			"type": "cortex-debug",
+// 			"servertype": "openocd",
+// 			"configFiles": [],
+// 			"searchDir": [],
+// 			"runToEntryPoint": "main",
+// 			"showDevDebugOutput": "none"
+// 		},
+// 		{
+// 			"type": "gdb",
+// 			"request": "attach",
+// 			"name": "Attach to gdbserver",
+// 			"executable": "${workspaceRoot}/build/zephyr/zephyr.elf",
+// 			"target": "192.168.7.2:3333",
+// 			"remote": true,
+// 			"cwd": "${workspaceRoot}", 
+// 			"gdbpath": "C:/gnu_arm_embedded/bin/arm-none-eabi-gdb.exe",
+// 			"autorun": [
+// 					"dir"
+// 				]
+// 		}
+//     ]
+// }
+{
+    "version": "0.2.0",
+    "configurations": [
+        {   
+            "name": "Debug nrf52",         
+            "type":"cortex-debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/zephyr/zephyr.elf",
+            "request": "launch",
+            "servertype": "openocd",
+            "showDevDebugOutput": "raw",
+            "configFiles": [
+                "interface/jlink.cfg",
+                "target/nrf52.cfg",
+            ]
+            // Connect to an already running OpenOCD instance
+            "gdbTarget": "localhost:3333",
+            "runToEntryPoint": "main",
+            "gdbPath": "/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+            "preRestartCommands": [
+                "file ./build/zephyr/zephyr.elf",
+                "load",
+                "enable breakpoint",
+                "monitor reset"
+              ]
+            // 	program filename.elf verify 
+            //     "break main",
+            
+			// Work around for stopping at main on restart
+            "postRestartCommands": [
+                // "monitor nrf52_recover",
+                // "monitor flash write_image /tmp/mcuboot-e73.hex",
+                // "monitor flash write_image /tmp/zephyr.signed.elf",
+                "monitor soft_reset_halt",
+			    "continue",
+            ],
+        },
+    {
+        "name": "(gdb) Launch",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/build/zephyr/zephyr.exe",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${fileDirname}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            },
+            {
+                "description":  "Set Disassembly Flavor to Intel",
+                "text": "-gdb-set disassembly-flavor intel",
+                "ignoreFailures": true
+            }
+        ]
+    },
+        {
+            "name": "Beaglebone-SWD",
+            "type":"cortex-debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/zephyr/zephyr.elf",
+            "request": "launch",
+            "servertype": "external",
+            // This may need to be arm-none-eabi-gdb depending on your system
+			"armToolchainPath": "C:\\gnu_arm_embedded\\bin\\",
+            "gdbPath": "C:\\gnu_arm_embedded\\bin\\arm-none-eabi-gdb.exe", 
+            // Connect to an already running OpenOCD instance
+            "gdbTarget": "192.168.7.2:3333",
+            "runToEntryPoint": "main",
+            // 	program filename.elf verify 
+            //     "break main",
+            
+			// Work around for stopping at main on restart
+            "postRestartCommands": [
+                // "monitor nrf52_recover",
+                // "monitor flash write_image /tmp/mcuboot-e73.hex",
+                // "monitor flash write_image /tmp/zephyr.signed.elf",
+                "monitor soft_reset_halt",
+			    "continue",
+            ],
+            "showDevDebugOutput": "none",
+        }
+    ]
+}
