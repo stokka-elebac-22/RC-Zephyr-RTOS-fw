@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-// CAN bus: 
+// CAN bus:
 #ifdef CONFIG_CAN
 
 #include <zephyr.h>
@@ -39,12 +39,11 @@ struct can_bus_err_cnt current_err_cnt;
 CAN_DEFINE_MSGQ(counter_msgq, 2);
 
 void can_api_init(void) {
-     int ret;     
-     printk("GET: %s\n", can_dev->name); // node 0
+     int ret;
+     printk("GET: %s\n", can_dev->name);  // node 0
 }
 
-void tx_irq_callback(int error, void *arg)
-{
+void tx_irq_callback(int error, void *arg) {
 	char *sender = (char *)arg;
 
 	if (error != 0) {
@@ -53,8 +52,7 @@ void tx_irq_callback(int error, void *arg)
 	}
 }
 
-void rx_thread(void *arg1, void *arg2, void *arg3)
-{
+void rx_thread(void *arg1, void *arg2, void *arg3) {
 	ARG_UNUSED(arg1);
 	ARG_UNUSED(arg2);
 	ARG_UNUSED(arg3);
@@ -84,16 +82,14 @@ void rx_thread(void *arg1, void *arg2, void *arg3)
 	}
 }
 
-void change_led(struct zcan_frame *msg, void *unused)
-{
+void change_led(struct zcan_frame *msg, void *unused) {
 	ARG_UNUSED(unused);
 
 	printk("LED %s\n", msg->data[0] == SET_LED ? "ON" : "OFF");
 	return;
 }
 
-char *state_to_str(enum can_state state)
-{
+char *state_to_str(enum can_state state) {
 	switch (state) {
 	case CAN_ERROR_ACTIVE:
 		return "error-active";
@@ -105,8 +101,7 @@ char *state_to_str(enum can_state state)
 		return "unknown";
 	}
 }
-void poll_state_thread(void *unused1, void *unused2, void *unused3)
-{
+void poll_state_thread(void *unused1, void *unused2, void *unused3) {
 	struct can_bus_err_cnt err_cnt = {0, 0};
 	struct can_bus_err_cnt err_cnt_prev = {0, 0};
 	enum can_state state_prev = CAN_ERROR_ACTIVE;
@@ -117,7 +112,6 @@ void poll_state_thread(void *unused1, void *unused2, void *unused3)
 		if (err_cnt.tx_err_cnt != err_cnt_prev.tx_err_cnt ||
 		    err_cnt.rx_err_cnt != err_cnt_prev.rx_err_cnt ||
 		    state_prev != state) {
-
 			err_cnt_prev.tx_err_cnt = err_cnt.tx_err_cnt;
 			err_cnt_prev.rx_err_cnt = err_cnt.rx_err_cnt;
 			state_prev = state;
@@ -132,15 +126,13 @@ void poll_state_thread(void *unused1, void *unused2, void *unused3)
 	}
 }
 
-void state_change_isr(enum can_state state, struct can_bus_err_cnt err_cnt)
-{
+void state_change_isr(enum can_state state, struct can_bus_err_cnt err_cnt) {
 	current_state = state;
 	current_err_cnt = err_cnt;
 	k_work_submit(&state_change_work);
 }
 
-void state_change_work_handler(struct k_work *work)
-{
+void state_change_work_handler(struct k_work *work) {
 	printk("State Change ISR\nstate: %s\n"
 	       "rx error count: %d\n"
 	       "tx error count: %d\n",
@@ -149,8 +141,7 @@ void state_change_work_handler(struct k_work *work)
 }
 #endif
 
-
-/// CAN FROM MAIN: 
+/// CAN FROM MAIN:
 // #ifdef CONFIG_CAN
 // 	const struct zcan_filter change_led_filter = {
 // 		.id_type = CAN_STANDARD_IDENTIFIER,

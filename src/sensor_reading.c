@@ -1,4 +1,4 @@
-// "Copyright 2022 Horti-proj"
+// "Copyright 2022 RC-project"
 #include <zephyr.h>
 #include <devicetree.h>
 #include <drivers/sensor.h>
@@ -14,14 +14,14 @@ struct sensordata sensor_readings[MAX_SENSOR_READINGS];
 #define TEMP_SENSOR DT_LABEL(DT_NODELABEL(bme280))
 const struct device *dev_env;
 // struct sensor_value temp, press, humidity;
-#endif // BME280
-#ifdef CONFIG_VL53L0X 
+#endif   // BME280
+#ifdef CONFIG_VL53L0X
 const struct device *dev_vl5310x;
 // struct sensor_value vl53_value;
-#endif // VL53L0x
+#endif   // VL53L0x
 #ifdef CONFIG_MPU6500
 
-#endif // MPU6500
+#endif   // MPU6500
 
 int init_sensors() {
 #ifdef CONFIG_BME280
@@ -44,7 +44,7 @@ int init_sensors() {
 		LOG_ERR("Device VL53L0x is not ready, check the driver initialization logs for errors.");
 	}
     LOG_INF("Found device VL53L0x getting sensor data\n");
-#endif // VL53L0x
+#endif   // VL53L0x
 
 #ifdef CONFIG_MPU6500
 	// const char *const label = DT_LABEL(DT_INST(0, invensense_mpu9250));
@@ -52,8 +52,8 @@ int init_sensors() {
 	// if (!mpu6050) {
 	// 	printf("Failed to find sensor %s\n", label);
 	// 	return;
-	// }    
-#endif // MPU6500
+	// }
+#endif   // MPU6500
 
     return 0;
 }
@@ -106,7 +106,7 @@ void work_make_readings_and_send(struct k_work *work) {
 #endif
     currentreading = HCSR04_0;
     LOG_DBG("Make distance reading");
-    int channels[] = {SENSOR_CHAN_DISTANCE, SENSOR_CHAN_DISTANCE};    
+    int channels[] = {SENSOR_CHAN_DISTANCE, SENSOR_CHAN_DISTANCE};
     for (int i = 0; i < (sizeof(channels) / sizeof(int)); i++) {
         if (currentreading < MAX_SENSOR_READINGS) {
             sensor_readings[currentreading].measurement_type = channels[i];
@@ -119,11 +119,11 @@ void work_make_readings_and_send(struct k_work *work) {
 
 #ifdef CONFIG_MPU6500
 
-#endif // MPU6500
+#endif   // MPU6500
 
 #ifdef CONFIG_CAN
     // Transmit over CAN (?)
-#endif // CAN
+#endif   // CAN
 }
 
 K_WORK_DELAYABLE_DEFINE(make_rd_and_send, work_make_readings_and_send);
@@ -136,20 +136,24 @@ int make_reading_and_send() {
 void log_output_all_sensors() {
     #ifdef CONFIG_BME280
             LOG_INF("temp: %d.%02d; press: %d.%03d; humidity: %d.%03d",
-                sensor_readings[BME280_AMBIENT_TEMP].data_channel.val1, sensor_readings[BME280_AMBIENT_TEMP].data_channel.val2, 
-                sensor_readings[BME280_PRESS].data_channel.val1, sensor_readings[BME280_PRESS].data_channel.val2,
-                sensor_readings[BME280_HUMIDITY].data_channel.val1, sensor_readings[BME280_HUMIDITY].data_channel.val2);
+                sensor_readings[BME280_AMBIENT_TEMP].data_channel.val1,
+                sensor_readings[BME280_AMBIENT_TEMP].data_channel.val2,
+                sensor_readings[BME280_PRESS].data_channel.val1,
+                sensor_readings[BME280_PRESS].data_channel.val2,
+                sensor_readings[BME280_HUMIDITY].data_channel.val1,
+                sensor_readings[BME280_HUMIDITY].data_channel.val2);
     #endif
     #ifdef CONFIG_VL53L0X
             LOG_INF("Distance: %d.%02d; proximity: %d",
-                sensor_readings[VL53L0X_DISTANCE].data_channel.val1, sensor_readings[VL53L0X_DISTANCE].data_channel.val2, 
-                sensor_readings[VL53L0X_PROX].data_channel.val1);            
+                sensor_readings[VL53L0X_DISTANCE].data_channel.val1,
+                sensor_readings[VL53L0X_DISTANCE].data_channel.val2,
+                sensor_readings[VL53L0X_PROX].data_channel.val1);
     #endif
-    // if distance sensors 
-        LOG_INF("Distance HCSR04-0: %d.%02d", 
+    // if distance sensors
+        LOG_INF("Distance HCSR04-0: %d.%02d",
             sensor_readings[HCSR04_0].data_channel.val1,
             sensor_readings[HCSR04_0].data_channel.val2);
-        LOG_INF("Distance HCSR04-1: %d.%02d", 
+        LOG_INF("Distance HCSR04-1: %d.%02d",
             sensor_readings[HCSR04_1].data_channel.val1,
             sensor_readings[HCSR04_1].data_channel.val2);
     // endif distance sensors

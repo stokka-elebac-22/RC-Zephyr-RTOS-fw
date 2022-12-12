@@ -41,7 +41,7 @@ struct config_struct {
 };
 
 enum sensor_ids {
-    BME280_0, 
+    BME280_0,
     MCP6500_0,
     VL53L0X_0,
 };

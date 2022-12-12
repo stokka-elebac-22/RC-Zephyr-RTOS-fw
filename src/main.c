@@ -46,8 +46,7 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 static const struct gpio_dt_spec button = GPIO_DT_SPEC_GET_OR(SW0_NODE, gpios, {0});
 static struct gpio_callback button_cb_data;
 
-void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
-{
+void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
 	LOG_INF("Button pressed at %" PRIu32 "\n", k_cycle_get_32());
 	// Can be used to reset distance / change mode ...
 	// gpio_remove_callback(button.port, &button_cb_data);
@@ -113,10 +112,10 @@ void main(void) {
 		uart_line_ctrl_get(dev_console, UART_LINE_CTRL_DTR, &dtr);
 		k_sleep(K_MSEC(1000));
 	}
-	#endif // WAIT UNTIL USB CONNECTION
+	#endif  // WAIT UNTIL USB CONNECTION
 
     LOG_INF("ELEBAC22 RC - %s \n", GIT_DESCRIBE);
-	LOG_INF("HC-SR04 initializing!");   	
+	LOG_INF("HC-SR04 initializing!");
 	hcsr_init();  // Initialize HC-SR04 sensors
 	LOG_INF("Sensor handler initializing!");
 	init_sensors();
@@ -135,10 +134,10 @@ void main(void) {
 	while (1) {
 		if (motor_dir) {
 			motor_set_speed(MOTOR_LEFT, DIR_FORWARD, motor_level);
-			motor_set_speed(MOTOR_RIGHT, DIR_FORWARD, motor_level);			
+			motor_set_speed(MOTOR_RIGHT, DIR_FORWARD, motor_level);
 		} else {
 			motor_set_speed(MOTOR_LEFT, DIR_REVERSE, motor_level);
-			motor_set_speed(MOTOR_RIGHT, DIR_REVERSE, motor_level);			
+			motor_set_speed(MOTOR_RIGHT, DIR_REVERSE, motor_level);
 		}
 		motor_level += 10;
 		if (motor_level >= 201) {

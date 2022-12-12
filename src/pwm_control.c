@@ -60,9 +60,9 @@ int motor_init() {
 
 int motor_set_speed(enum motor_ids motor, int dir, int speed) {
     int speed_value = 200 - speed;
-    switch(motor) {
+    switch (motor) {
         case MOTOR_LEFT:
-            if (dir == DIR_FORWARD){
+            if (dir == DIR_FORWARD) {
                 pwm_pin_set_cycles(pwm3_dev, MOTOR_1_0_PWM_PORT, 200, speed_value, 0);  // V FREM
                 pwm_pin_set_cycles(pwm3_dev, MOTOR_1_1_PWM_PORT, 200, 200, 0);  // V FREM
             } else if (dir == DIR_REVERSE) {
@@ -72,7 +72,7 @@ int motor_set_speed(enum motor_ids motor, int dir, int speed) {
             break;
 
         case MOTOR_RIGHT:
-            if (dir == DIR_FORWARD){
+            if (dir == DIR_FORWARD) {
                 pwm_pin_set_cycles(pwm1_dev, MOTOR_0_0_PWM_PORT, 200, 200, 0);   // H FREM
                 pwm_pin_set_cycles(pwm1_dev, MOTOR_0_1_PWM_PORT, 200, speed_value, 0);   // H FREM
             } else if (dir == DIR_REVERSE) {
@@ -86,7 +86,7 @@ int motor_set_speed(enum motor_ids motor, int dir, int speed) {
             // needed for controlling direction. Example for that can be found in the ELE340 project.
             // For Other motor drivers other sets of frequency / PWM can be set to control the motor.
             LOG_ERR("External motor logic is not defined. Need to first choose a motor.");
-            if (dir == DIR_FORWARD){
+            if (dir == DIR_FORWARD) {
                 // pwm_pin_set_cycles(pwm0_dev, MOTOR_EXT_PWM_PORT, 200, 200, 0);   // EXT MOTOR
             } else if (dir == DIR_REVERSE) {
                 // pwm_pin_set_cycles(pwm0_dev, MOTOR_EXT_PWM_PORT, 200, 200, 0);   // EXT MOTOR
@@ -100,7 +100,7 @@ int motor_set_speed(enum motor_ids motor, int dir, int speed) {
 }
 
 int motor_servo_set_angle(int angle) {
-	// pwm_pin_set_cycles(pwm1_dev, SERVO_PWM_PORT, 200, 100, 0);   // SERVO 
+	// pwm_pin_set_cycles(pwm1_dev, SERVO_PWM_PORT, 200, 100, 0);   // SERVO
     /* all in micro second */
     // STEP 100    /* PWM pulse step */
     // MINPULSEWIDTH 1000  /* Servo 0 degrees */

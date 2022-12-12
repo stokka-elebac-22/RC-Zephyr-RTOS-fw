@@ -1,13 +1,14 @@
+// "Copyright 2022 RC-project"
 #include <zephyr.h>
 #include <stdio.h>
 #include <device.h>
 #include <drivers/gpio.h>
 #include <drivers/sensor.h>
+#include <logging/log.h>
 
 #include "headers/definitions.h"
 #include "headers/hcsr_distance_sensor.h"
 
-#include <logging/log.h>
 
 LOG_MODULE_REGISTER(distance, LOG_LEVEL_INF);
 
@@ -75,8 +76,7 @@ void hcsr_get(int sensor_no, int channel, struct sensor_value *sv) {
     sv->val2 = distance_readings[sensor_no].val2;
 }
 
-void echo_returned(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
-{
+void echo_returned(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
     if (trig_type == 0) {
         if (cur_dist_sensor == 0) {
             gpio_remove_callback(echo_0.port, &echo_0_cb_data);

@@ -75,9 +75,9 @@ jobs:
           version="${GITHUB_REF##*/}"
           mkdir -p "$GITHUB_WORKSPACE/${version}${{ matrix.board }}"
           west build -b ${{ matrix.board }}
-          cp build/zephyr/zephyr.signed.hex /tmp/Horti-LED_${{ matrix.board }}.hex
-          cp build/zephyr/zephyr.signed.bin \
-            "$GITHUB_WORKSPACE/${version}${{ matrix.board }}/Horti-LED_${{ matrix.board }}-${git_branch}-${git_hash}.bin"
+          cp build/zephyr/zephyr.hex /tmp/RC_${{ matrix.board }}.hex
+          cp build/zephyr/zephyr.bin \
+            "$GITHUB_WORKSPACE/${version}${{ matrix.board }}/RC_${{ matrix.board }}-${git_branch}-${git_hash}.bin"
       # Will need project number. Should be changed with API deployment
       # - name: deploy file to server
       #   uses: Horticulture-project/SFTP-Deploy-Action@v1.2.2

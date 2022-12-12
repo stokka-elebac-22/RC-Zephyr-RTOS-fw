@@ -61,7 +61,8 @@ LOG_MODULE_REGISTER(app);
 //     } else {
 //         settings_set_led_time_off(newHour, newMinute, current_panel);
 //     }
-//     shell_print(shell, "LedPanel %s - LED %d: %d:%d", (state == 1) ? "ON" : "OFF", current_panel, newHour, newMinute);
+//     shell_print(shell, "LedPanel %s - LED %d: %d:%d", (state == 1) ? "ON" : "OFF",
+//     current_panel, newHour, newMinute);
 //     return 0;
 // }
 // static int set_LedPanel_on(const struct shell *shell, size_t argc, char **argv) {
