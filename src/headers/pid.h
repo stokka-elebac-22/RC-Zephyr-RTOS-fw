@@ -10,19 +10,19 @@
 
 struct PIDController {
     struct pid_gains pid_gains;   // Controller gains
-    struct limits output_limits;  	   // Output limits
+    struct limits output_limits;         // Output limits
     struct limits integrator_limits;   // Integrator limits
 
-	float tau;    // Derivative low-pass filter time constant
-	float T;      // Sample time (in seconds)
+    float tau;    // Derivative low-pass filter time constant
+    float T;      // Sample time (in seconds)
 
-	float proportional;			/* Required for graph      */
-	float prevError;			/* Required for integrator */
-	float integrator;           /* Controller "memory" */
-	float prevMeasurement;		/* Required for differentiator */
-	float differentiator;
+    float proportional;            /* Required for graph      */
+    float prevError;            /* Required for integrator */
+    float integrator;           /* Controller "memory" */
+    float prevMeasurement;        /* Required for differentiator */
+    float differentiator;
 
-	float out;  	 // Controller output
+    float out;       // Controller output
 };
 
 void  PIDController_Init(struct PIDController *pid);
