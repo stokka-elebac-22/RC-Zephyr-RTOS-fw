@@ -13,10 +13,10 @@
 LOG_MODULE_REGISTER(distance, LOG_LEVEL_INF);
 
 // USER BTN Interrupt:
-#define TRIG_PIN_0_NODE	DT_ALIAS(trig0)
-#define ECHO_PIN_0_NODE	DT_ALIAS(echo0)
-#define TRIG_PIN_1_NODE	DT_ALIAS(trig1)
-#define ECHO_PIN_1_NODE	DT_ALIAS(echo1)
+#define TRIG_PIN_0_NODE    DT_ALIAS(trig0)
+#define ECHO_PIN_0_NODE    DT_ALIAS(echo0)
+#define TRIG_PIN_1_NODE    DT_ALIAS(trig1)
+#define ECHO_PIN_1_NODE    DT_ALIAS(echo1)
 // #define TRIG_0_PIN DT_GPIO_PIN(TRIG_PIN_0_NODE, gpios)
 // #define TRIG_1_PIN DT_GPIO_PIN(TRIG_PIN_1_NODE, gpios)
 
@@ -101,43 +101,43 @@ void hcsr_init() {
     LOG_INF("Init HC-SR04 distance sensors");
     gpio_pin_configure_dt(&trig_0, GPIO_OUTPUT);
     gpio_pin_configure_dt(&trig_1, GPIO_OUTPUT);
-	gpio_init_callback(&echo_0_cb_data, echo_returned, BIT(echo_0.pin));
-	gpio_init_callback(&echo_1_cb_data, echo_returned, BIT(echo_1.pin));
-	int ret;
-	if (!device_is_ready(echo_0.port)) {
-		LOG_ERR("Error: Echo-pin device %s is not ready\n",
-		       echo_0.port->name);
-		return;
-	}
-	ret = gpio_pin_configure_dt(&echo_0, GPIO_INPUT);
-	if (ret != 0) {
-		LOG_ERR("Error %d: failed to configure %s pin %d\n",
-		       ret, echo_0.port->name, echo_0.pin);
-		return;
-	}
-	ret = gpio_pin_interrupt_configure_dt(&echo_0, GPIO_INT_EDGE_TO_ACTIVE);
-	if (ret != 0) {
-		LOG_ERR("Error %d: failed to configure interrupt on %s pin %d\n",
-			ret, echo_0.port->name, echo_0.pin);
-		return;
-	}
-	if (!device_is_ready(echo_1.port)) {
-		LOG_ERR("Error: Echo-pin device %s is not ready\n",
-		       echo_1.port->name);
-		return;
-	}
-	ret = gpio_pin_configure_dt(&echo_1, GPIO_INPUT);
-	if (ret != 0) {
-		LOG_ERR("Error %d: failed to configure %s pin %d\n",
-		       ret, echo_1.port->name, echo_1.pin);
-		return;
-	}
-	ret = gpio_pin_interrupt_configure_dt(&echo_1, GPIO_INT_EDGE_TO_ACTIVE);
-	if (ret != 0) {
-		LOG_ERR("Error %d: failed to configure interrupt on %s pin %d\n",
-			ret, echo_1.port->name, echo_1.pin);
-		return;
-	}
+    gpio_init_callback(&echo_0_cb_data, echo_returned, BIT(echo_0.pin));
+    gpio_init_callback(&echo_1_cb_data, echo_returned, BIT(echo_1.pin));
+    int ret;
+    if (!device_is_ready(echo_0.port)) {
+        LOG_ERR("Error: Echo-pin device %s is not ready\n",
+               echo_0.port->name);
+        return;
+    }
+    ret = gpio_pin_configure_dt(&echo_0, GPIO_INPUT);
+    if (ret != 0) {
+        LOG_ERR("Error %d: failed to configure %s pin %d\n",
+               ret, echo_0.port->name, echo_0.pin);
+        return;
+    }
+    ret = gpio_pin_interrupt_configure_dt(&echo_0, GPIO_INT_EDGE_TO_ACTIVE);
+    if (ret != 0) {
+        LOG_ERR("Error %d: failed to configure interrupt on %s pin %d\n",
+            ret, echo_0.port->name, echo_0.pin);
+        return;
+    }
+    if (!device_is_ready(echo_1.port)) {
+        LOG_ERR("Error: Echo-pin device %s is not ready\n",
+               echo_1.port->name);
+        return;
+    }
+    ret = gpio_pin_configure_dt(&echo_1, GPIO_INPUT);
+    if (ret != 0) {
+        LOG_ERR("Error %d: failed to configure %s pin %d\n",
+               ret, echo_1.port->name, echo_1.pin);
+        return;
+    }
+    ret = gpio_pin_interrupt_configure_dt(&echo_1, GPIO_INT_EDGE_TO_ACTIVE);
+    if (ret != 0) {
+        LOG_ERR("Error %d: failed to configure interrupt on %s pin %d\n",
+            ret, echo_1.port->name, echo_1.pin);
+        return;
+    }
     k_timer_start(&hcsr_timer, SENSE_FREQ, SENSE_FREQ);
 }
 
