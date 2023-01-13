@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 
+ * Copyright (c) 2021
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -86,5 +86,15 @@ enum system_timers {
     MAXSYSTEMTIMERS,
 };
 
+struct pid_gains {
+    float K_p;
+    float K_i;
+    float K_d;
+};
+
+struct limits {
+    float min;
+    float max;
+};
 
 #endif  // SRC_HEADERS_DEFINITIONS_H_

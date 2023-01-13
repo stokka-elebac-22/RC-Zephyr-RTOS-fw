@@ -128,22 +128,7 @@ void main(void) {
     LOG_INF("Work queue for PID etc initializing!");
     wq_init();
 
-    int motor_level = 0;
-    int motor_dir = 0;
-
     while (1) {
-        if (motor_dir) {
-            motor_set_speed(MOTOR_LEFT, DIR_FORWARD, motor_level);
-            motor_set_speed(MOTOR_RIGHT, DIR_FORWARD, motor_level);
-        } else {
-            motor_set_speed(MOTOR_LEFT, DIR_REVERSE, motor_level);
-            motor_set_speed(MOTOR_RIGHT, DIR_REVERSE, motor_level);
-        }
-        motor_level += 10;
-        if (motor_level >= 201) {
-            motor_level = 0;
-            motor_dir = !motor_dir;
-        }
         make_reading_and_send();
         /* Give CPU resources to low priority threads. */
         k_sleep(K_MSEC(100));

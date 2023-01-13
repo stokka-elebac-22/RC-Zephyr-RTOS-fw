@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 
+ * Copyright (c) 2021
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -11,8 +11,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-// #include "headers/definitions.h"
+#include "headers/definitions.h"
 // #include "headers/hort_settings.h"
+#include "headers/pwm_control.h"
 #include "headers/git.h"
 
 LOG_MODULE_REGISTER(app);
@@ -48,53 +49,28 @@ LOG_MODULE_REGISTER(app);
 //     return 0;
 // }
 
-// static int set_LedPanelTime(const struct shell *shell, char **argv, uint8_t state) {
-//     uint8_t current_panel = atoi(argv[1]);
-//     uint8_t newHour = atoi(argv[2]);
-//     uint8_t newMinute = atoi(argv[3]);
-//     if (newHour == 24) { newHour = 0; }
-//     if (check_valid_data(shell, current_panel, newHour, newHour, 0, 0) < 0) {
-//         return -1;
-//     }
-//     if (state == 1) {
-//         settings_set_led_time_on(newHour, newMinute, current_panel);
-//     } else {
-//         settings_set_led_time_off(newHour, newMinute, current_panel);
-//     }
-//     shell_print(shell, "LedPanel %s - LED %d: %d:%d", (state == 1) ? "ON" : "OFF",
-//     current_panel, newHour, newMinute);
-//     return 0;
-// }
-// static int set_LedPanel_on(const struct shell *shell, size_t argc, char **argv) {
-//     return set_LedPanelTime(shell, argv, 1);
-// }
+static int menu_set_motors(const struct shell *shell, char **argv, uint8_t state) {
+    uint8_t dir_a = atoi(argv[1]);
+    uint8_t speed_a = atoi(argv[2]);
+    uint8_t dir_b = atoi(argv[3]);
+    uint8_t speed_b = atoi(argv[4]);
+    if (speed_a > 201) { speed_a = 201; }
+    if (speed_b > 201) { speed_b = 201; }
 
-// static int set_LedPanel_off(const struct shell *shell, size_t argc, char **argv) {
-//     return set_LedPanelTime(shell, argv, 0);
-// }
-
-// static int set_LedPanel_mode(const struct shell *shell, size_t argc, char **argv) {
-//     settings_set_led_mode(atoi(argv[1]), atoi(argv[2]));
-//     shell_print(shell, "LedPanel %s - Status: %d", argv[1], settings_get_led_mode(atoi(argv[1])));
-//     return 0;
-// }
-
-// static int get_LedPanel_mode(const struct shell *shell, size_t argc, char **argv) {
-//     for (uint8_t i = 0; i < 4; i++) {
-//         shell_print(shell, "LedPanel %i - Status: %d", i, settings_get_led_mode(i));
-//         struct led_level led_values = settings_get_led_levels(i);
-//         shell_print(shell, "  P0: %d   RB: %d  Li: %d  P1: %d",
-//             led_values.pink0, led_values.rblue, led_values.lime, led_values.pink1);
-//         struct led_timer led_timers = settings_get_led_timers(i);
-//         uint8_t hours_on = led_timers.led_time_on/3600;
-//         uint8_t hours_off = led_timers.led_time_off/3600;
-//         shell_print(shell, "  ON: %d:%d   OFF: %d:%d  Dim-time: %d min Mode: %d \n",
-//             hours_on, ((led_timers.led_time_on-hours_on*3600)/60),
-//             hours_off, ((led_timers.led_time_off-hours_off*3600)/60),
-//             led_timers.led_dim_time, led_timers.mode);
-//     }
-//     return 0;
-// }
+    if (dir_a) {
+        motor_set_speed(MOTOR_LEFT, DIR_FORWARD, speed_a);
+    } else {
+        motor_set_speed(MOTOR_LEFT, DIR_REVERSE, speed_a);
+    }
+    if (dir_b) {
+        motor_set_speed(MOTOR_RIGHT, DIR_FORWARD, speed_b);
+    } else {
+        motor_set_speed(MOTOR_RIGHT, DIR_REVERSE, speed_b);
+    }
+    shell_print(shell, "m0: %d - %d  |  m1: %d - %d.",
+        dir_a, speed_a, dir_b, speed_b);
+    return 0;
+}
 
 char* is_dirty() {
     if (GIT_IS_DIRTY) {
@@ -106,19 +82,19 @@ char* is_dirty() {
 
 static int cmd_fw_version(const struct shell *shell) {
     shell_print(shell, "Zephyr version %s", KERNEL_VERSION_STRING);
-    shell_print(shell, "Horticulture LED firmware version %s-%s%s", GIT_BRANCH, GIT_DESCRIBE, is_dirty());
+    shell_print(shell, "RC-Controller firmware version %s-%s%s", GIT_BRANCH, GIT_DESCRIBE, is_dirty());
     return 0;
 }
 
-SHELL_STATIC_SUBCMD_SET_CREATE(sub_horti,
+SHELL_STATIC_SUBCMD_SET_CREATE(sub_rc,
     // SHELL_CMD_ARG(led-intensity, NULL, " led-intensity [ledpanel] [color] [intensity 0-255]", set_LedPanel, 3, 1),
     // SHELL_CMD_ARG(led-start, NULL, "led-start [ledpanel] [HH] [MM]", set_LedPanel_on, 3, 1),
     // SHELL_CMD_ARG(led-stop, NULL, "led-stop [ledpanel] [HH] [MM]", set_LedPanel_off, 3, 1),
     // SHELL_CMD_ARG(led-state, NULL, "led-state [ledpanel] [ACTIVE (1) / INACTIVE (0)]", set_LedPanel_mode, 2, 1),
-    // SHELL_CMD_ARG(led-print-settings, NULL, "led-print-settings", get_LedPanel_mode, 0, 1),
+    SHELL_CMD_ARG(motor-set_speed, NULL, "motor-set_speed [dir a] [v a] [dir b] [v b]", menu_set_motors, 4, 1),
     SHELL_CMD(sysver, NULL, "Show System version", cmd_fw_version),
     SHELL_SUBCMD_SET_END /* Array terminated. */
 );
 
-SHELL_CMD_REGISTER(horti, &sub_horti, "Horticulture Commands", NULL);
+SHELL_CMD_REGISTER(rc_controller, &sub_rc, "RC-Controller Commands", NULL);
 #endif  // CONFIG_SHELL

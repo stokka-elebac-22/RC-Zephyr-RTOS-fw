@@ -135,7 +135,7 @@ int make_reading_and_send() {
 
 void log_output_all_sensors() {
     #ifdef CONFIG_BME280
-            LOG_INF("temp: %d.%02d; press: %d.%03d; humidity: %d.%03d",
+            LOG_INF("temp: %d.%06d; press: %d.%03d; humidity: %d.%03d",
                 sensor_readings[BME280_AMBIENT_TEMP].data_channel.val1,
                 sensor_readings[BME280_AMBIENT_TEMP].data_channel.val2,
                 sensor_readings[BME280_PRESS].data_channel.val1,
@@ -144,16 +144,16 @@ void log_output_all_sensors() {
                 sensor_readings[BME280_HUMIDITY].data_channel.val2);
     #endif
     #ifdef CONFIG_VL53L0X
-            LOG_INF("Distance: %d.%02d; proximity: %d",
+            LOG_INF("Distance: %d.%06d; proximity: %d",
                 sensor_readings[VL53L0X_DISTANCE].data_channel.val1,
                 sensor_readings[VL53L0X_DISTANCE].data_channel.val2,
                 sensor_readings[VL53L0X_PROX].data_channel.val1);
     #endif
     // if distance sensors
-        LOG_INF("Distance HCSR04-0: %d.%02d",
+        LOG_INF("Distance HCSR04-0: %d.%06d",
             sensor_readings[HCSR04_0].data_channel.val1,
             sensor_readings[HCSR04_0].data_channel.val2);
-        LOG_INF("Distance HCSR04-1: %d.%02d",
+        LOG_INF("Distance HCSR04-1: %d.%06d",
             sensor_readings[HCSR04_1].data_channel.val1,
             sensor_readings[HCSR04_1].data_channel.val2);
     // endif distance sensors
