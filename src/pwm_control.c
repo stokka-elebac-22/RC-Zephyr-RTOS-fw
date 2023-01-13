@@ -43,19 +43,19 @@ const struct device *pwm1_dev;
 const struct device *pwm3_dev;
 
 int motor_init() {
-	pwm0_dev = DEVICE_DT_GET(PWM0_DEV_NAME);
-	if (!device_is_ready(pwm0_dev)) {
-		LOG_ERR("PWM device is not ready\n");
-	}
-	pwm1_dev = DEVICE_DT_GET(PWM1_DEV_NAME);
-	if (!device_is_ready(pwm1_dev)) {
-		LOG_ERR("PWM device is not ready\n");
-	}
-	pwm3_dev = DEVICE_DT_GET(PWM3_DEV_NAME);
-	if (!device_is_ready(pwm3_dev)) {
-		LOG_ERR("PWM device is not ready\n");
-	}
-	return 0;
+    pwm0_dev = DEVICE_DT_GET(PWM0_DEV_NAME);
+    if (!device_is_ready(pwm0_dev)) {
+        LOG_ERR("PWM device is not ready\n");
+    }
+    pwm1_dev = DEVICE_DT_GET(PWM1_DEV_NAME);
+    if (!device_is_ready(pwm1_dev)) {
+        LOG_ERR("PWM device is not ready\n");
+    }
+    pwm3_dev = DEVICE_DT_GET(PWM3_DEV_NAME);
+    if (!device_is_ready(pwm3_dev)) {
+        LOG_ERR("PWM device is not ready\n");
+    }
+    return 0;
 }
 
 int motor_set_speed(enum motor_ids motor, int dir, int speed) {
@@ -100,7 +100,7 @@ int motor_set_speed(enum motor_ids motor, int dir, int speed) {
 }
 
 int motor_servo_set_angle(int angle) {
-	// pwm_pin_set_cycles(pwm1_dev, SERVO_PWM_PORT, 200, 100, 0);   // SERVO
+    // pwm_pin_set_cycles(pwm1_dev, SERVO_PWM_PORT, 200, 100, 0);   // SERVO
     /* all in micro second */
     // STEP 100    /* PWM pulse step */
     // MINPULSEWIDTH 1000  /* Servo 0 degrees */

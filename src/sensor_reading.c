@@ -26,33 +26,33 @@ const struct device *dev_vl5310x;
 int init_sensors() {
 #ifdef CONFIG_BME280
     dev_env = DEVICE_DT_GET_ANY(bosch_bme280);
-	if (dev_env == NULL) {
-		LOG_ERR("Error: BME280 not found.");
-	}
-	if (!device_is_ready(dev_env)) {
-		LOG_ERR("Device BME280 is not ready, check the driver initialization logs for errors.");
-	}
-	LOG_INF("Found device BME280 getting sensor data\n");
+    if (dev_env == NULL) {
+        LOG_ERR("Error: BME280 not found.");
+    }
+    if (!device_is_ready(dev_env)) {
+        LOG_ERR("Device BME280 is not ready, check the driver initialization logs for errors.");
+    }
+    LOG_INF("Found device BME280 getting sensor data\n");
 #endif
 
 #ifdef CONFIG_VL53L0X
-	dev_vl5310x = DEVICE_DT_GET_ANY(st_vl53l0x);
-	if (dev_vl5310x == NULL) {
-		LOG_ERR("Error: VL53L0x not found.");
-	}
-	if (!device_is_ready(dev_vl5310x)) {
-		LOG_ERR("Device VL53L0x is not ready, check the driver initialization logs for errors.");
-	}
+    dev_vl5310x = DEVICE_DT_GET_ANY(st_vl53l0x);
+    if (dev_vl5310x == NULL) {
+        LOG_ERR("Error: VL53L0x not found.");
+    }
+    if (!device_is_ready(dev_vl5310x)) {
+        LOG_ERR("Device VL53L0x is not ready, check the driver initialization logs for errors.");
+    }
     LOG_INF("Found device VL53L0x getting sensor data\n");
 #endif   // VL53L0x
 
 #ifdef CONFIG_MPU6500
-	// const char *const label = DT_LABEL(DT_INST(0, invensense_mpu9250));
-	// const struct device *mpu9250 = device_get_binding(label);
-	// if (!mpu6050) {
-	// 	printf("Failed to find sensor %s\n", label);
-	// 	return;
-	// }
+    // const char *const label = DT_LABEL(DT_INST(0, invensense_mpu9250));
+    // const struct device *mpu9250 = device_get_binding(label);
+    // if (!mpu6050) {
+    //     printf("Failed to find sensor %s\n", label);
+    //     return;
+    // }
 #endif   // MPU6500
 
     return 0;
@@ -67,9 +67,9 @@ void work_make_readings_and_send(struct k_work *work) {
         LOG_DBG("Make environment reading");
         int channels[] = {SENSOR_CHAN_AMBIENT_TEMP, SENSOR_CHAN_PRESS, SENSOR_CHAN_HUMIDITY};
         ret = sensor_sample_fetch(dev_env);
-		if (ret) {
-			LOG_ERR("BME280 fetch failed ret: %d\n", ret);
-		} else {
+        if (ret) {
+            LOG_ERR("BME280 fetch failed ret: %d\n", ret);
+        } else {
             for (int i = 0; i < (sizeof(channels) / sizeof(int)); i++) {
                 if (currentreading < MAX_SENSOR_READINGS) {
                     sensor_readings[currentreading].measurement_type = channels[i];
@@ -89,9 +89,9 @@ void work_make_readings_and_send(struct k_work *work) {
         LOG_DBG("Make distance reading");
         int channels[] = {SENSOR_CHAN_DISTANCE, SENSOR_CHAN_PROX};
         ret = sensor_sample_fetch(dev_vl5310x);
-		if (ret) {
-			LOG_ERR("VL53L0X fetch failed ret: %d\n", ret);
-		} else {
+        if (ret) {
+            LOG_ERR("VL53L0X fetch failed ret: %d\n", ret);
+        } else {
             for (int i = 0; i < (sizeof(channels) / sizeof(int)); i++) {
                 if (currentreading < MAX_SENSOR_READINGS) {
                     sensor_readings[currentreading].measurement_type = channels[i];
