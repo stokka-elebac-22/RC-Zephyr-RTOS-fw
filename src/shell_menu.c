@@ -49,7 +49,7 @@ LOG_MODULE_REGISTER(app);
 //     return 0;
 // }
 
-static int menu_set_motors(const struct shell *shell, char **argv, uint8_t state) {
+static int menu_set_motors(const struct shell *shell, size_t argc, char **argv) {
     shell_print(shell, "Setting motor speed ... %s", argv[0]);
 
     uint8_t motor = atoi(argv[1]);
