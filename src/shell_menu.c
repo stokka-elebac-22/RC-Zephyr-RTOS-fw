@@ -50,25 +50,36 @@ LOG_MODULE_REGISTER(app);
 // }
 
 static int menu_set_motors(const struct shell *shell, char **argv, uint8_t state) {
-    uint8_t dir_a = atoi(argv[1]);
-    uint8_t speed_a = atoi(argv[2]);
-    uint8_t dir_b = atoi(argv[3]);
-    uint8_t speed_b = atoi(argv[4]);
-    if (speed_a > 201) { speed_a = 201; }
-    if (speed_b > 201) { speed_b = 201; }
+    shell_print(shell, "Setting motor speed ... %s", argv[0]);
 
-    if (dir_a) {
-        motor_set_speed(MOTOR_LEFT, DIR_FORWARD, speed_a);
-    } else {
-        motor_set_speed(MOTOR_LEFT, DIR_REVERSE, speed_a);
+    uint8_t motor = atoi(argv[1]);
+    uint8_t dir = atoi(argv[2]);
+    uint8_t speed = atoi(argv[3]);
+
+    // uint8_t speed_b = 0; // atoi(argv[4]);
+
+    shell_print(shell, "m%d: %d - %d",
+        motor, dir, speed);
+
+    if (speed > 201) { speed = 201; }
+    switch (motor) {
+        case 0:
+            if (dir) {
+                motor_set_speed(MOTOR_LEFT, DIR_FORWARD, speed);
+            } else {
+                motor_set_speed(MOTOR_LEFT, DIR_REVERSE, speed);
+            }
+            break;
+        case 1:
+            if (dir) {
+                motor_set_speed(MOTOR_RIGHT, DIR_FORWARD, speed);
+            } else {
+                motor_set_speed(MOTOR_RIGHT, DIR_REVERSE, speed);
+            }
+            break;
     }
-    if (dir_b) {
-        motor_set_speed(MOTOR_RIGHT, DIR_FORWARD, speed_b);
-    } else {
-        motor_set_speed(MOTOR_RIGHT, DIR_REVERSE, speed_b);
-    }
-    shell_print(shell, "m0: %d - %d  |  m1: %d - %d.",
-        dir_a, speed_a, dir_b, speed_b);
+    shell_print(shell, "m%d: %d - %d",
+        motor, dir, speed);
     return 0;
 }
 
@@ -91,7 +102,7 @@ SHELL_STATIC_SUBCMD_SET_CREATE(sub_rc,
     // SHELL_CMD_ARG(led-start, NULL, "led-start [ledpanel] [HH] [MM]", set_LedPanel_on, 3, 1),
     // SHELL_CMD_ARG(led-stop, NULL, "led-stop [ledpanel] [HH] [MM]", set_LedPanel_off, 3, 1),
     // SHELL_CMD_ARG(led-state, NULL, "led-state [ledpanel] [ACTIVE (1) / INACTIVE (0)]", set_LedPanel_mode, 2, 1),
-    SHELL_CMD_ARG(motor-set_speed, NULL, "motor-set_speed [dir a] [v a] [dir b] [v b]", menu_set_motors, 4, 1),
+    SHELL_CMD_ARG(motor-set-speed, NULL, "motor-set-speed [dir a] [v a] [dir b] [v b]", menu_set_motors, 4, 0),
     SHELL_CMD(sysver, NULL, "Show System version", cmd_fw_version),
     SHELL_SUBCMD_SET_END /* Array terminated. */
 );
