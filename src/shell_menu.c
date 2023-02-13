@@ -50,36 +50,25 @@ LOG_MODULE_REGISTER(app);
 // }
 
 static int menu_set_motors(const struct shell *shell, size_t argc, char **argv) {
-    shell_print(shell, "Setting motor speed ... %s", argv[0]);
+    uint8_t dir_a = atoi(argv[1]);
+    uint8_t speed_a = atoi(argv[2]);
+    uint8_t dir_b = atoi(argv[3]);
+    uint8_t speed_b = atoi(argv[4]);
+    if (speed_a > 201) { speed_a = 201; }
+    if (speed_b > 201) { speed_b = 201; }
 
-    uint8_t motor = atoi(argv[1]);
-    uint8_t dir = atoi(argv[2]);
-    uint8_t speed = atoi(argv[3]);
-
-    // uint8_t speed_b = 0; // atoi(argv[4]);
-
-    shell_print(shell, "m%d: %d - %d",
-        motor, dir, speed);
-
-    if (speed > 201) { speed = 201; }
-    switch (motor) {
-        case 0:
-            if (dir) {
-                motor_set_speed(MOTOR_LEFT, DIR_FORWARD, speed);
-            } else {
-                motor_set_speed(MOTOR_LEFT, DIR_REVERSE, speed);
-            }
-            break;
-        case 1:
-            if (dir) {
-                motor_set_speed(MOTOR_RIGHT, DIR_FORWARD, speed);
-            } else {
-                motor_set_speed(MOTOR_RIGHT, DIR_REVERSE, speed);
-            }
-            break;
+    if (dir_a) {
+        motor_set_speed(MOTOR_LEFT, DIR_FORWARD, speed_a);
+    } else {
+        motor_set_speed(MOTOR_LEFT, DIR_REVERSE, speed_a);
     }
-    shell_print(shell, "m%d: %d - %d",
-        motor, dir, speed);
+    if (dir_b) {
+        motor_set_speed(MOTOR_RIGHT, DIR_FORWARD, speed_b);
+    } else {
+        motor_set_speed(MOTOR_RIGHT, DIR_REVERSE, speed_b);
+    }
+    shell_print(shell, "m0: %d - %d  |  m1: %d - %d.",
+        dir_a, speed_a, dir_b, speed_b);
     return 0;
 }
 
